@@ -1,24 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import SignIn from "./components/Sign/SignIn";
+import SignUp from "./components/Sign/SignUp";
+import NotFound from "./components/NotFound/NotFound";
+import Todos from "./components/Todos/Todos";
+import styled from "styled-components";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+`;
 
 function App() {
+  const [isSignUp, setIsSignUp] = useState(false);
+  const accessToken = localStorage.getItem("access_token");
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              accessToken === null ? (
+                isSignUp ? (
+                  <SignUp handleEvent={setIsSignUp} />
+                ) : (
+                  <SignIn handleEvent={setIsSignUp} />
+                )
+              ) : (
+                <Navigate to="/todo"></Navigate>
+              )
+            }
+          ></Route>
+          <Route
+            path="/todo"
+            element={
+              <Todos />
+            }
+          ></Route>
+          <Route path="*" element={<NotFound />}></Route>
+        </Routes>
+      </BrowserRouter>
+    </Container>
   );
 }
 
